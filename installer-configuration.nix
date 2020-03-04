@@ -36,13 +36,7 @@ in {
   isoImage.makeEfiBootable = true;
   isoImage.makeUsbBootable = true;
   isoImage.volumeID = "NIXOS_ISO";
-  isoImage.storeContents = [ # TODO: Check if the whole storeContents attr is needed
-    # Add install-relevant stuff
-    #installBuild.nixos-enter # unconfirmed if this is really needed
-    #installBuild.nixos-generate-config # unconfirmed if this is really needed
-    #installBuild.nixos-install # unconfirmed if this is really needed
-    installBuild.toplevel.drvPath
-  ];
+  isoImage.storeContents = [ installBuild.toplevel ];
   isoImage.includeSystemBuildDependencies = true; # unconfirmed if this is really needed
 
   system.stateVersion = "20.03";
