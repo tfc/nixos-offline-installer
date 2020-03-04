@@ -23,7 +23,7 @@ in {
 
   environment.systemPackages = with pkgs; [
     git
-    parted
+    parted # check if this can be removed
   ];
 
   system.nixos-generate-config.configuration = installConfigurationString;
@@ -36,13 +36,12 @@ in {
   isoImage.makeEfiBootable = true;
   isoImage.makeUsbBootable = true;
   isoImage.volumeID = "NIXOS_ISO";
-  isoImage.storeContents = [
+  isoImage.storeContents = [ # TODO: Check if the whole storeContents attr is needed
     # Add install-relevant stuff
-    installBuild.nixos-enter # unconfirmed if this is really needed
-    installBuild.nixos-generate-config # unconfirmed if this is really needed
-    installBuild.nixos-install # unconfirmed if this is really needed
-    installBuild.toplevel
-    installConfiguration.systemd.package
+    #installBuild.nixos-enter # unconfirmed if this is really needed
+    #installBuild.nixos-generate-config # unconfirmed if this is really needed
+    #installBuild.nixos-install # unconfirmed if this is really needed
+    installBuild.toplevel.drvPath
   ];
   isoImage.includeSystemBuildDependencies = true; # unconfirmed if this is really needed
 
@@ -103,6 +102,9 @@ in {
       # needed over.
       nix build -f '<nixpkgs/nixos>' system -I "nixos-config=/mnt/etc/nixos/configuration.nix" -o /out
       nix copy --no-check-sigs --to local?root=/mnt /out
+
+      # alternatively, instead of doing the nix build and then nix copy, maybe try the following:
+      #nix copy --no-check-sigs --to local?root=/mnt ${installBuild.toplevel.drvPath}
 
       ${installBuild.nixos-install}/bin/nixos-install --no-root-passwd
       reboot

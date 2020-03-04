@@ -5,14 +5,19 @@
     ./hardware-configuration.nix
   ];
 
-  nixpkgs.config.allowUnfree = true;
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
+  boot.loader = {
+    systemd-boot.enable = true;
+    efi.canTouchEfiVariables = true;
+  };
 
   console.keyMap = "us";
+
+  environment.systemPackages = with pkgs; [
+    git
+  ];
+
   i18n.defaultLocale = "en_US.UTF-8";
 
-  time.timeZone = "Europe/Berlin";
 
   services.xserver = {
     enable = true;
@@ -23,16 +28,7 @@
     desktopManager.gnome3.enable = true;
   };
 
-
-
-  #boot.initrd.kernelModules = [ "wl" ];
-  #boot.kernelModules = [ "kvm-intel" "wl" ];
-  #boot.extraModulePackages = [ config.boot.kernelPackages.broadcom_sta ];
-
-  # programs that should be available in the installer
-  environment.systemPackages = with pkgs; [
-    git
-  ];
-
   services.sshd.enable = true;
+
+  time.timeZone = "Europe/Berlin";
 }
