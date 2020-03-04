@@ -103,9 +103,6 @@ in {
       nix build -f '<nixpkgs/nixos>' system -I "nixos-config=/mnt/etc/nixos/configuration.nix" -o /out
       nix copy --no-check-sigs --to local?root=/mnt /out
 
-      # alternatively, instead of doing the nix build and then nix copy, maybe try the following:
-      #nix copy --no-check-sigs --to local?root=/mnt ${installBuild.toplevel.drvPath}
-
       ${installBuild.nixos-install}/bin/nixos-install --no-root-passwd
       reboot
     '';
