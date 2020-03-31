@@ -1,32 +1,33 @@
-{ installConfigurationPath, installConfiguration }:
+{ installConfigurationPath }:
 
 { config, pkgs, lib, ... }:
 
 let
-  installConfigurationString = builtins.readFile installConfigurationPath;
-  installBuild = installConfiguration.system.build;
+  installConfiguration = import <nixpkgs/nixos> {
+    configuration = import installConfigurationPath;
+  };
+  installBuild = installConfiguration.config.system.build;
 in {
   imports = [
-    ../nixos/modules/installer/cd-dvd/iso-image.nix
-    ../nixos/modules/profiles/all-hardware.nix
-    ../nixos/modules/profiles/base.nix
-    ../nixos/modules/profiles/installation-device.nix
-    ../nixos/modules/installer/cd-dvd/channel.nix
-    ../nixos/modules/installer/tools/tools.nix
+    <nixpkgs/nixos/modules/installer/cd-dvd/iso-image.nix>
+    <nixpkgs/nixos/modules/profiles/all-hardware.nix>
+    <nixpkgs/nixos/modules/profiles/base.nix>
+    <nixpkgs/nixos/modules/profiles/installation-device.nix>
+    <nixpkgs/nixos/modules/installer/cd-dvd/channel.nix>
+    <nixpkgs/nixos/modules/installer/tools/tools.nix>
   ];
 
-  # configure proprietary drivers
   nixpkgs.config.allowUnfree = true;
-  #boot.initrd.kernelModules = [ "wl" ];
-  #boot.kernelModules = [ "kvm-intel" "wl" ];
-  #boot.extraModulePackages = [ config.boot.kernelPackages.broadcom_sta ];
+  boot.initrd.kernelModules = [ "wl" ];
+  boot.kernelModules = [ "kvm-intel" "wl" ];
+  boot.extraModulePackages = [ config.boot.kernelPackages.broadcom_sta ];
 
   environment.systemPackages = with pkgs; [
     git
     parted # check if this can be removed
   ];
 
-  system.nixos-generate-config.configuration = installConfigurationString;
+  system.nixos-generate-config.configuration = builtins.readFile installConfigurationPath;
 
   systemd.services.sshd.enable = true;
 
@@ -38,8 +39,6 @@ in {
   isoImage.volumeID = "NIXOS_ISO";
   isoImage.storeContents = [ installBuild.toplevel ];
   isoImage.includeSystemBuildDependencies = true; # unconfirmed if this is really needed
-
-  system.stateVersion = "20.03";
 
   systemd.services.installer = {
     description = "Unattended NixOS installer";

@@ -2,8 +2,16 @@
 
 ## How to build
 
+To build the installer with the `<nixpkgs>` in your `NIX_PATH`, just do:
+
 ```bash
-NIX_PATH="nixpkgs=/..." nix-build
+nix-build installer-iso.nix
+```
+
+To build the installer with the `<nixpkgs>` from the `niv` sources in `nix/sources.json`, do:
+
+```bash
+nix-build
 ```
 
 ## How to test in `qemu`
@@ -15,10 +23,15 @@ qemu-system-x86_64 -enable-kvm -boot d -hda /tmp/qemu-mydisk.img -m 2000 -bios $
 
 ## Interesting files:
 
-- `install-configuration`:
-  - The `configuration.nix` is used by `nixos-generate-config` during installation.
-    Customize this to your needs.
-  - the `hardware-configuration` will be newly generated on your installation target.
-    TODO: add more proprietary modules so the installer can work on more machines.
+- `installer-iso.nix`: This file assembles the NixOS configs and emits an
+  installer ISO derivation.
 - `installer-configuration.nix`: This image contains the other image and all the
   interesting scriptery to automate the offline installation.
+- `install-configuration.nix`: This configuration is used by
+  `nixos-generate-config` during installation. Customize this to your needs.
+  - This must stay one file. During installation, the
+    `hardware-configuration.nix` is still automatically generated. After
+    installation, you may add the generated `hardware-configuration.nix` to your
+    `imports = [ ... ];` configuration field. Having it in during installation
+    risks the functioning of the installer, because it is hard to predict what
+    dependencies it will contain.

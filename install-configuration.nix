@@ -1,9 +1,15 @@
-{config, pkgs, ...}:
+{ config, pkgs, lib, ... }:
 
 {
-  imports = [
-    ./hardware-configuration.nix
-  ];
+  hardware.enableRedistributableFirmware = true;
+  hardware.enableAllFirmware = true;
+
+  powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
+
+  fileSystems."/" = {
+    device = "/dev/disk/by-label/nixos";
+    fsType = "ext4";
+  };
 
   boot.loader = {
     systemd-boot.enable = true;
