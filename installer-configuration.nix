@@ -10,17 +10,8 @@ let
 in {
   imports = [
     <nixpkgs/nixos/modules/installer/cd-dvd/iso-image.nix>
-    <nixpkgs/nixos/modules/profiles/all-hardware.nix>
     <nixpkgs/nixos/modules/profiles/base.nix>
-    <nixpkgs/nixos/modules/profiles/installation-device.nix>
-    <nixpkgs/nixos/modules/installer/cd-dvd/channel.nix>
-    <nixpkgs/nixos/modules/installer/tools/tools.nix>
   ];
-
-  nixpkgs.config.allowUnfree = true;
-  boot.initrd.kernelModules = [ "wl" ];
-  boot.kernelModules = [ "kvm-intel" "wl" ];
-  boot.extraModulePackages = [ config.boot.kernelPackages.broadcom_sta ];
 
   environment.systemPackages = with pkgs; [
     git
@@ -29,13 +20,9 @@ in {
 
   system.nixos-generate-config.configuration = builtins.readFile installConfigurationPath;
 
-  systemd.services.sshd.enable = true;
-
   isoImage.compressImage = false;
   isoImage.isoBaseName = "nixos-offline-installer";
   isoImage.isoName = "${config.isoImage.isoBaseName}-${config.system.nixos.label}-${pkgs.stdenv.hostPlatform.system}.iso";
-  isoImage.makeEfiBootable = true;
-  isoImage.makeUsbBootable = true;
   isoImage.volumeID = "NIXOS_ISO";
   isoImage.storeContents = [ installBuild.toplevel ];
   isoImage.includeSystemBuildDependencies = true; # unconfirmed if this is really needed

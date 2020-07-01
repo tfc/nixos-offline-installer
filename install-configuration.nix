@@ -1,8 +1,7 @@
 { config, pkgs, lib, ... }:
 
 {
-  hardware.enableRedistributableFirmware = true;
-  hardware.enableAllFirmware = true;
+  nixpkgs.overlays = [ (import <cbspkgs-public/overlay.nix>) ];
 
   powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
 
@@ -16,39 +15,16 @@
     efi.canTouchEfiVariables = true;
   };
 
-  console.keyMap = "us";
-
   environment.systemPackages = with pkgs; [
     git
+    cbspkgs.bender
   ];
 
-  hardware.bluetooth.enable = true;
-  hardware.opengl.driSupport32Bit = true;
-  hardware.pulseaudio = {
-    enable = true;
-    package = pkgs.pulseaudioFull;
-    support32Bit = true;
-  };
-
-
   i18n.defaultLocale = "en_US.UTF-8";
-
-  networking.networkmanager.enable = true;
 
   nixpkgs.config = {
     allowUnfree = true;
   };
-
-  services.xserver = {
-    enable = true;
-    layout = "us";
-    xkbOptions = "eurosign:e";
-    displayManager.gdm.enable = true;
-    displayManager.gdm.wayland = false;
-    desktopManager.gnome3.enable = true;
-  };
-
-  services.sshd.enable = true;
 
   time.timeZone = "Europe/Berlin";
 

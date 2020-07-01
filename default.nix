@@ -16,6 +16,9 @@ let
   # to that path and we must not drop that.
   scopedImport = let f = ps: builtins.scopedImport {
     import = f __nixPath;
-    __nixPath = [ { path = nixpkgs; prefix = "nixpkgs"; } ] ++ ps;
+    __nixPath = [
+      { path = nixpkgs; prefix = "nixpkgs"; }
+      { path = niv.cbspkgs-public; prefix = "cbspkgs-public"; }
+    ] ++ ps;
   }; in f [];
 in scopedImport ./installer-iso.nix
