@@ -1,4 +1,4 @@
-# NixOS offline installer candidate
+# NixOS offline installer demo (untested since 21.05)
 
 ## How to build
 
