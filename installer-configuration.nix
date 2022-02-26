@@ -1,20 +1,20 @@
 { installConfigurationPath }:
 
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, modulesPath, ... }:
 
 let
-  installConfiguration = import <nixpkgs/nixos> {
+  installConfiguration = import "${pkgs.path}/nixos" {
     configuration = import installConfigurationPath;
   };
   installBuild = installConfiguration.config.system.build;
 in {
   imports = [
-    <nixpkgs/nixos/modules/installer/cd-dvd/iso-image.nix>
-    <nixpkgs/nixos/modules/profiles/all-hardware.nix>
-    <nixpkgs/nixos/modules/profiles/base.nix>
-    <nixpkgs/nixos/modules/profiles/installation-device.nix>
-    <nixpkgs/nixos/modules/installer/cd-dvd/channel.nix>
-    <nixpkgs/nixos/modules/installer/tools/tools.nix>
+    "${modulesPath}/installer/cd-dvd/iso-image.nix"
+    "${modulesPath}/profiles/all-hardware.nix"
+    "${modulesPath}/profiles/base.nix"
+    "${modulesPath}/profiles/installation-device.nix"
+    "${modulesPath}/installer/cd-dvd/channel.nix"
+    "${modulesPath}/installer/tools/tools.nix"
   ];
 
   nixpkgs.config.allowUnfree = true;
