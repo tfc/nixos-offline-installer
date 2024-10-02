@@ -1,5 +1,9 @@
 # NixOS offline installer demo (untested since 21.05)
 
+This repository is no longer maintained.
+
+If you are interested in an unattended NixOS installer that also works offline, please look here: https://github.com/tfc/nixos-auto-installer
+
 ## How to build
 
 To build the installer with the `<nixpkgs>` in your `NIX_PATH`, just do:
